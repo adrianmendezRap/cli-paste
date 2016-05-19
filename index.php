@@ -57,7 +57,7 @@ if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revis
 		echo "File ".limpia($_GET["d"])." not found";
 		die();
 	}elseif(isset($_GET["l"]) && $_GET["l"] != ""){ // Revisamos si hay peticion para resaltar la sintaxis
-		require_once('PHPygments.php');
+		require_once('PHPygments/PHPygments.php');
 		$file = file_get_contents('txt/'.limpia($_GET["d"]));
 		$result = PHPygments::render($file, limpia($_GET["l"]));
 		if ($result["code"] == ""){ // En caso de que no exista o no sea soportada la peticion se informa y se envia el texto sin formatear
