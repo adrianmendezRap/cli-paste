@@ -1,4 +1,4 @@
-Command line pastebin for php, in use at [http://paste.musicmix.com.es/](http://paste.musicmix.com.es/).
+Command line pastebin for php, in use at [http://toura.co.nf/](http://toura.co.nf/).
 
 [sprunge](https://github.com/rupa/sprunge) php clone
 
