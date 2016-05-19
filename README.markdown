@@ -4,6 +4,6 @@ Command line pastebin for php, in use at [http://paste.musicmix.com.es/](http://
 
 Requirements:
 
-* [pygments](http://pygments.org/). currently using version 1.6.
+* [pygments](http://pygments.org/). currently using version 2.1.3.
 
 Licensed under the WTFPL.
