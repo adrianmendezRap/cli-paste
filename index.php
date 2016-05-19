@@ -28,7 +28,7 @@ function RandomName($length = 4) {
 }
 
 $urlhost = "http://".$_SERVER['HTTP_HOST'];
-$appname = "paste";
+$appname = "paste"; // Nombre de la app
 // FIN FUNCIONES Y VARIABLES //
 
 if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revisamos si existe entrada de datos por POST y si es por "paste"
@@ -106,7 +106,7 @@ EXAMPLES
 
 SEE ALSO
     http://github.com/rupa/sprunge (original py program)
-    (github soon)
+    https://github.com/adrianmendezRap/cli-paste
 
 		</pre>
 	</body>
