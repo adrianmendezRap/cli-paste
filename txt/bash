@@ -1,0 +1,16 @@
+if [ -t 0 ]; then
+    if [ -z "${1}" ]; then
+        printf "clipaste(1)                        CLIPASTE                        clipaste(1)\n\nNAME\n    clipaste: command line pastebin (${url})\n\nSYNOPSIS\n    <command> | clipaste => Create new Paste\n    clipaste <ID> => Get a Paste in console\n\nEXAMPLES\n    ~$ cat bin/ching | clipaste\n       ${url}aXZI\n    ~$ clipaste aXZI > aXZI.sh\n"
+        exit 192
+    else
+        curl -sS $url$1
+    fi
+else
+    IFS=''
+    data='paste= '
+    while read -r input ; do
+        data="$data$input
+"
+    done
+    curl -F $data $url
+fi
