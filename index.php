@@ -28,7 +28,7 @@ function RandomName($length = 4) {
 }
 
 $urlhost = "http://".$_SERVER['HTTP_HOST'];
-$appname = "paste"; // Nombre de la app
+$appname = "paste";
 // FIN FUNCIONES Y VARIABLES //
 
 if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revisamos si existe entrada de datos por POST y si es por "paste"
@@ -41,7 +41,7 @@ if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revis
 		}else{ // Si no existe creamos el fichero y guardamos el contenido
 			$check = FALSE;
 			$file = fopen('txt/'.$tmpname, "w"); // Creamos un nuevo archivo con el nombre generado
-			fwrite($file, $_POST["paste"]);
+			fwrite($file, str_replace(" ","",$_POST["paste"]));
 			fclose($file);
 			$ip = fopen('ip.php', "a+"); // Guardamos la IP de origen y la fecha/hora por motivos de seguridad
 			$data = $tmpname." - ".$_SERVER['REMOTE_ADDR']." - ".date("D M j G:i:s T Y")."\n";
@@ -55,6 +55,15 @@ if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revis
 }elseif(!empty($_GET)&& isset($_GET["d"]) && $_GET["d"] != "" ){ // Revisamos si hay peticion de datos por GET y si es por "d"
 	if (!file_exists('txt/'.limpia($_GET["d"]))){ // Revisamos que el archivo de la peticion exista
 		echo "File ".limpia($_GET["d"])." not found";
+		die();
+	}elseif(limpia($_GET["d"]) == "bash"){
+		header('Content-type: text/plain; charset=UTF-8');
+		echo "#!/bin/bash
+";
+		echo "url='".$urlhost."/'
+";
+		$file = file_get_contents('txt/'.limpia($_GET["d"]));
+		echo $file;
 		die();
 	}elseif(isset($_GET["l"]) && $_GET["l"] != ""){ // Revisamos si hay peticion para resaltar la sintaxis
 		require_once('PHPygments/PHPygments.php');
@@ -71,7 +80,7 @@ if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revis
 			echo $result["code"];
 			die();
 		}			
-	}else{ // Si no se pide formatear la salida y el archivo existe se envia en formato de texto plano
+	}else{ // Si no se pide formatear la salida y el archivo existe se envia en formato de texto plano	
 		header('Content-type: text/plain; charset=UTF-8');
 		$file = file_get_contents('txt/'.limpia($_GET["d"]));
 		echo $file;
@@ -79,14 +88,46 @@ if (!empty($_POST) && isset($_POST["paste"]) && $_POST["paste"] != ""){ // Revis
 	}
 
 }else{ // Si no hay entrada y peticion de datos imprimimos la pagina con la informacion
-?>
-<html>
-	<head>
-		<title><? echo strtolower($appname); ?></title>
-		<style> a { text-decoration: none } </style>
-	</head>
-	<body>
-		<pre>
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'curl') !== false) { // Salida para acceso via curl
+		header('Content-type: text/plain; charset=UTF-8');
+		// INICIO SALIDA cURL //
+		?>
+<? echo strtolower($appname); ?>(1)                          <? echo strtoupper($appname); ?>                          <? echo strtolower($appname); ?>(1)
+
+NAME
+    <? echo strtolower($appname); ?>: command line pastebin. sprunge PHP clone
+
+SYNOPSIS
+    <command> | curl -F 'paste=<-' <? echo $urlhost; ?>
+
+DESCRIPTION
+    add &l=<lang> to resulting url for line numbers and syntax highlighting
+    use the follow script to install "clipaste" in your system:
+	
+curl -sS -o "/tmp/clipaste" <? echo $urlhost; ?>/bash; chmod 755 /tmp/clipaste; sudo chown root.root /tmp/clipaste; sudo mv /tmp/clipaste /bin/clipaste
+
+EXAMPLES
+    ~$ cat bin/ching | curl -F 'paste=<-' <? echo $urlhost; ?> 
+       <? echo $urlhost; ?>/aXZI
+    ~$ firefox <? echo $urlhost; ?>/aXZI&l=py
+
+SEE ALSO
+    http://github.com/rupa/sprunge (original py program)
+    https://github.com/adrianmendezRap/cli-paste
+		<?
+		// FIN SALIDA cURL //
+		echo "\n";
+		die();
+	}else{ // Salida para navegadores normales
+		// INICIO SALIDA NAVEGADOR //
+		?>
+		<html>
+			<head>
+				<title>paste</title>
+				<style> a { text-decoration: none } </style>
+			</head>
+			<body>
+				<pre>
 <? echo strtolower($appname); ?>(1)                          <? echo strtoupper($appname); ?>                          <? echo strtolower($appname); ?>(1)
 
 NAME
@@ -108,10 +149,14 @@ SEE ALSO
     http://github.com/rupa/sprunge (original py program)
     https://github.com/adrianmendezRap/cli-paste
 
-		</pre>
-	</body>
-</html>
-<?php
-die();
+				</pre>
+			</body>
+		</html>		
+		<?
+		// FIN SALIDA NAVEGADOR //
+		die();
+	}
+?>
+<?
 }
 ?>
