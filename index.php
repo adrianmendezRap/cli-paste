@@ -123,7 +123,7 @@ SEE ALSO
 		?>
 		<html>
 			<head>
-				<title>paste</title>
+				<title><? echo strtolower($appname); ?></title>
 				<style> a { text-decoration: none } </style>
 			</head>
 			<body>
